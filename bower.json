@@ -9,5 +9,16 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "resolutions": {
+    "angular": "~1.4.0"
+  },
+  "dependencies": {
+    "angular": "~1.4.0",
+    "angular-route": "~1.4.0",
+    "bootstrap": "~3.3.4",
+    "font-awesome": "~4.3.0",
+    "leaflet": "~0.7.3",
+    "angular-leaflet-directive": "~0.8.3"
+  }
 }

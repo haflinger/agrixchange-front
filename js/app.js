@@ -19,6 +19,10 @@ agriApp.config(['$routeProvider',
         templateUrl: 'js/partials/register.html',
         controller: 'RegisterCtrl'
       })
+      .when('/plot', {
+        templateUrl: 'js/partials/plot.html',
+        controller: 'PlotCtrl'
+      })
       .otherwise({
         redirectTo: '/index'
       });

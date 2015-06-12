@@ -1,0 +1,4 @@
+'use strict';
+
+angular.module('agri.config', [])
+  .constant('API_BASE_URL', 'http://api.local/');

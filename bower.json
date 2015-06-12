@@ -1,0 +1,13 @@
+{
+  "name": "agrixchange-front",
+  "version": "0.0.1",
+  "homepage": "https://github.com/haflinger/agrixchange-front",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

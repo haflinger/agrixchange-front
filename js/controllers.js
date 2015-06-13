@@ -18,7 +18,8 @@ agriControllers.controller('IndexCtrl', ['$scope', '$http', '$modal','leafletDat
 
     //
     $scope.savePlot = function() {
-      var savePlotModal = $modal.open({
+
+      var savePlotModalInstance = $modal.open({
         animation: true,
         templateUrl: 'js/partials/modals/savePlot.html',
         controller: 'SavePlotModalCtrl',
@@ -28,6 +29,12 @@ agriControllers.controller('IndexCtrl', ['$scope', '$http', '$modal','leafletDat
             return $scope.plot;
           }
         }
+      });
+
+      savePlotModalInstance.result.then(function (plot) {
+        $scope.plot = plot;
+      }, function () {
+        console.log('Annulation');
       });
     }
 
@@ -61,6 +68,8 @@ agriControllers.controller('IndexCtrl', ['$scope', '$http', '$modal','leafletDat
 
     map.on('draw:created', function (event) {
 
+      console.log(event);
+      $scope.plot = event;
       $scope.savePlot();
 
       var layer = event.layer;
@@ -95,6 +104,18 @@ agriControllers.controller('PlotCtrl', ['$scope', function ( $scope ) {
 
 // SAVE PLOT MODAL Controller
 agriControllers.controller('SavePlotModalCtrl', ['$scope', '$modalInstance', 'plot', function($scope, $modalInstance, plot){
+
+  $scope.plot = plot;
+
+  $scope.submit = function () {
+    if($scope.plot.name.length >= 1) {
+      $modalInstance.close($scope.plot);
+    }
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
 
 }]);
 

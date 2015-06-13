@@ -12,8 +12,8 @@ agriServices.factory('User',
     });
   }]);
 
-  agriServices.factory('sessionService', [ '$log', '$localStorage',
-      function ($log, $localStorage) {
+  agriServices.factory('sessionService', [ '$http', '$log', '$localStorage', 'API_BASE_URL',
+      function ($http, $log, $localStorage, API_BASE_URL) {
     // Instantiate data when service
         // is loaded
         if ($localStorage.session ) {
@@ -28,11 +28,21 @@ agriServices.factory('User',
           return this._user;
         };
 
-        this.setUser = function(user){
-          this._user = user;
-          $localStorage.session = {
-            user : JSON.stringify(user)
-          }
+        this.setUser = function(){
+
+          if(typeof(this._access_token) != 'undefined') {
+
+            $http.get(API_BASE_URL + 'users/me?access_token='+ this._access_token ).success(function(data){
+              this._user = data;
+            });
+
+            $localStorage.session = {
+              user : this._user
+            }
+
+          };
+
+
           return this;
         };
 
@@ -45,15 +55,14 @@ agriServices.factory('User',
           $localStorage.session = {
             accessToken : token
           }
+          this.setUser();
           return this;
         };
 
         this.isLogged = function(){
           if(this._accessToken) {
-            console.log('Connecté');
             return true;
           } else {
-            console.log('Non Connecté')
             return false;
           }
         }

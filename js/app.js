@@ -9,10 +9,8 @@ var agriApp = angular.module('agriApp', [
 agriApp.run(['$rootScope', '$injector', 'sessionService', function($rootScope, $injector, sessionService) {
     $injector.get("$http").defaults.transformRequest = function(data, headersGetter) {
       if (sessionService.isLogged()) {
-
-        console.log("Bearer " + sessionService.getAccessToken());
-
         headersGetter()['Authorization'] = "Bearer " + sessionService.getAccessToken();
+        headersGetter()['Content-Type'] = "application/json";
       }
       if (data) {
         return angular.toJson(data);

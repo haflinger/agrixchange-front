@@ -59,3 +59,8 @@ agriControllers.controller('IndexCtrl', ['$scope', 'leafletData', function ( $sc
   };
 
 }]);
+
+// PLOT Controller
+agriControllers.controller('PlotCtrl', ['$scope', function ( $scope ) {
+
+}]);

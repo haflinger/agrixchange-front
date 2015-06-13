@@ -20,7 +20,7 @@ agriApp.config(['$routeProvider',
         templateUrl: 'js/partials/register.html',
         controller: 'RegisterCtrl'
       })
-      .when('/plot', {
+      .when('/plot/:plot_id', {
         templateUrl: 'js/partials/plot.html',
         controller: 'PlotCtrl'
       })

@@ -1,11 +1,16 @@
 var agriControllers = angular.module('agriControllers', ['agriServices']);
 
 // Index Controller
-agriControllers.controller('IndexCtrl', ['$scope', 'leafletData', function ( $scope, leafletData ) {
+agriControllers.controller('IndexCtrl', ['$scope', '$http', 'leafletData', 'Plot', 'sessionService', 'API_BASE_URL', function ( $scope, $http, leafletData, Plot, sessionService, API_BASE_URL ) {
 
   // LEAFLET MAP DRAW
 
   leafletData.getMap().then(function(map) {
+    /*
+    Plot.list({ user : 'user' }, function(plots){
+      //console.log(plots);
+    })
+    */
 
     var drawnItems = new L.featureGroup().addTo(map);
 
@@ -38,9 +43,17 @@ agriControllers.controller('IndexCtrl', ['$scope', 'leafletData', function ( $sc
 
         var layer = event.layer;
         drawnItems.addLayer(layer);
-        console.log(JSON.stringify(layer.toGeoJSON()));
-    });
 
+        Plot.new({
+          name : 'New Plot',
+          geoJson : layer.toGeoJSON(),
+          enabled : true,
+        }, function(response){
+
+        });
+
+        // console.log(JSON.stringify(layer.toGeoJSON()));
+    });
   });
 
   // LEAFLET MAP LAYERS
@@ -100,15 +113,11 @@ agriControllers.controller('LoginCtrl', ['$scope', '$http', '$location', 'sessio
 }]);
 
 agriControllers.controller('LogoutCtrl', ['sessionService', '$location', function ( sessionService , $location ) {
-
   sessionService.destroy();
-
   $location.path('/login');
 }]);
 
 
 agriControllers.controller('NavBarCtrl', ['$scope', '$http', 'sessionService', 'API_AUTH_URL', function ($scope, $http, sessionService, API_AUTH_URL ) {
-
   $scope.logged = sessionService.isLogged();
-
 }]);

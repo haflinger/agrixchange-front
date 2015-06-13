@@ -1,9 +1,12 @@
+'use strict'
+
 var agriApp = angular.module('agriApp', [
   'agri.config',
   'agriControllers',
+  'agriServices',
   'ngRoute',
   'leaflet-directive',
-  'agriServices'
+  'restangular'
 ]);
 
 agriApp.run(['$rootScope', '$injector', 'sessionService', function($rootScope, $injector, sessionService) {
@@ -17,6 +20,53 @@ agriApp.run(['$rootScope', '$injector', 'sessionService', function($rootScope, $
         return angular.toJson(data);
       }
     };
+}]);
+
+agriApp.config(['RestangularProvider', 'API_BASE_URL', function (RestangularProvider, API_BASE_URL) {
+  // The URL of the API endpoint
+  RestangularProvider.setBaseUrl('http://' + API_BASE_URL);
+
+  // JSON-LD @id support
+  RestangularProvider.setRestangularFields({
+      id: '@id'
+  });
+
+  RestangularProvider.setSelfLinkAbsoluteUrl(false);
+
+  // Hydra collections support
+  RestangularProvider.addResponseInterceptor(function (data, operation) {
+      // Remove trailing slash to make Restangular working
+      function populateHref(data) {
+          if (data['@id']) {
+              data.href = data['@id'].substring(1);
+          }
+      }
+
+      // Populate href property for the collection
+      populateHref(data);
+
+      if ('getList' === operation) {
+          var collectionResponse = data['hydra:member'];
+          collectionResponse.metadata = {};
+
+          // Put metadata in a property of the collection
+          angular.forEach(data, function (value, key) {
+              if ('hydra:member' !== key) {
+                  collectionResponse.metadata[key] = value;
+              }
+          });
+
+          // Populate href property for all elements of the collection
+          angular.forEach(collectionResponse, function (value) {
+              populateHref(value);
+          });
+
+          return collectionResponse;
+      }
+
+      return data;
+  });
+
 }]);
 
 agriApp.config(['$routeProvider',

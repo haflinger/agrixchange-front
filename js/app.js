@@ -6,7 +6,8 @@ var agriApp = angular.module('agriApp', [
   'agriServices',
   'ngRoute',
   'leaflet-directive',
-  'restangular'
+  'restangular',
+  'ui.bootstrap'
 ]);
 
 agriApp.run(['$rootScope', '$injector', 'sessionService', function($rootScope, $injector, sessionService) {
@@ -24,7 +25,7 @@ agriApp.run(['$rootScope', '$injector', 'sessionService', function($rootScope, $
 
 agriApp.config(['RestangularProvider', 'API_BASE_URL', function (RestangularProvider, API_BASE_URL) {
   // The URL of the API endpoint
-  RestangularProvider.setBaseUrl('http://' + API_BASE_URL);
+  RestangularProvider.setBaseUrl(API_BASE_URL);
 
   // JSON-LD @id support
   RestangularProvider.setRestangularFields({

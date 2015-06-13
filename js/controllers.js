@@ -1,16 +1,36 @@
 var agriControllers = angular.module('agriControllers', ['agriServices']);
 
 // Index Controller
-agriControllers.controller('IndexCtrl', ['$scope', '$http', 'leafletData', 'Plot', 'sessionService', 'API_BASE_URL', function ( $scope, $http, leafletData, Plot, sessionService, API_BASE_URL ) {
+agriControllers.controller('IndexCtrl', ['$scope', '$http', '$modal','leafletData', 'Plot', 'Restangular', 'sessionService', 'API_BASE_URL', function ( $scope, $http, $modal, leafletData, Plot, Restangular, sessionService, API_BASE_URL ) {
 
   // LEAFLET MAP DRAW
 
   leafletData.getMap().then(function(map) {
-    /*
-    Plot.list({ user : 'user' }, function(plots){
-      //console.log(plots);
-    })
-    */
+
+    // Loading Plots
+    var plots = Restangular.all('plots');
+
+    // TEST
+    plots.getList().then(function(plots) {
+      $scope.plots = plots;
+    });
+
+
+    //
+    $scope.savePlot = function() {
+      var savePlotModal = $modal.open({
+        animation: true,
+        templateUrl: 'js/partials/modals/savePlot.html',
+        controller: 'SavePlotModalCtrl',
+        size: 'lg',
+        resolve: {
+          plot: function () {
+            return $scope.plot;
+          }
+        }
+      });
+    }
+
 
     var drawnItems = new L.featureGroup().addTo(map);
 
@@ -41,16 +61,11 @@ agriControllers.controller('IndexCtrl', ['$scope', '$http', 'leafletData', 'Plot
 
     map.on('draw:created', function (event) {
 
-        var layer = event.layer;
-        drawnItems.addLayer(layer);
+      $scope.savePlot();
 
-        Plot.new({
-          name : 'New Plot',
-          geoJson : layer.toGeoJSON(),
-          enabled : true,
-        }, function(response){
+      var layer = event.layer;
+      drawnItems.addLayer(layer);
 
-        });
 
         // console.log(JSON.stringify(layer.toGeoJSON()));
     });
@@ -75,6 +90,11 @@ agriControllers.controller('IndexCtrl', ['$scope', '$http', 'leafletData', 'Plot
 
 // PLOT Controller
 agriControllers.controller('PlotCtrl', ['$scope', function ( $scope ) {
+
+}]);
+
+// SAVE PLOT MODAL Controller
+agriControllers.controller('SavePlotModalCtrl', ['$scope', '$modalInstance', 'plot', function($scope, $modalInstance, plot){
 
 }]);
 

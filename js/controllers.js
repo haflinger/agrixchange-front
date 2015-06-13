@@ -68,6 +68,10 @@ agriControllers.controller('PlotCtrl', ['$scope', function ( $scope ) {
 // LOGIN Controller
 agriControllers.controller('LoginCtrl', ['$scope', '$http', '$location', 'sessionService', 'API_AUTH_URL', 'API_BASE_URL', function ( $scope, $http, $location, sessionService, API_AUTH_URL, API_BASE_URL ) {
 
+  if(sessionService.isLogged()) {
+    $location.path('/index');
+  }
+
   $scope.username = '';
   $scope.password = '';
 
@@ -77,25 +81,32 @@ agriControllers.controller('LoginCtrl', ['$scope', '$http', '$location', 'sessio
       + $scope.username
       + "&password="
       + $scope.password
-      + "&client_id=2_2ih5z6oswj0gwc80gw0scg4s0cg44880sc0sw84gsowcs8o00w&client_secret=lbim1q5buhw00o84gog4k8oo8gw84w4wkgwgggsoko0s0k48c").success(function(data, status){
+      + "&client_id=2_2ih5z6oswj0gwc80gw0scg4s0cg44880sc0sw84gsowcs8o00w&client_secret=lbim1q5buhw00o84gog4k8oo8gw84w4wkgwgggsoko0s0k48c").success(function(data){
       if(data.access_token) {
+
         sessionService.setAccessToken(data.access_token);
-        sessionService.setUser(data.access_token);
-        $location.path('/index');
+
+        $http.get(API_BASE_URL + 'users/me?access_token=' + data.access_token).success(function(data){
+          sessionService.setUser(data);
+          $location.path('/index');
+        })
       } else {
         $location.path('/login');
       }
+
+
     });
   }
 }]);
 
-agriControllers.controller('LogoutCtrl', ['$scope', '$location', 'sessionService', function ( $scope, $location, sessionService ) {
-  sessionService.destroy()
+agriControllers.controller('LogoutCtrl', ['$scope', '$location', function ( $scope, $location ) {
   $location.path('/login');
 }]);
 
 
-agriControllers.controller('NavBarCtrl', ['$scope', '$http', 'sessionService', 'API_AUTH_URL', 'API_BASE_URL', function ( $scope, $http, sessionService, API_AUTH_URL ) {
-  $scope.logged = sessionService.isLogged()
-  $scope.user   = sessionService.getUser()
+agriControllers.controller('NavBarCtrl', ['$scope', '$http', 'sessionService', 'API_AUTH_URL', function ( $scope, $http, sessionService, API_AUTH_URL ) {
+  $scope.logged = sessionService.isLogged();
+
+  console.log(sessionService.isLogged());
+
 }]);

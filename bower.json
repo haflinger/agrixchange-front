@@ -20,6 +20,7 @@
     "font-awesome": "~4.3.0",
     "leaflet": "~0.7.3",
     "angular-leaflet-directive": "~0.8.3",
-    "leaflet.draw": "~0.2.4"
+    "leaflet.draw": "~0.2.4",
+    "angular-resource": "~1.4.0"
   }
 }

@@ -1,4 +1,4 @@
-var agriControllers = angular.module('agriControllers', []);
+var agriControllers = angular.module('agriControllers', ['agriServices']);
 
 // Index Controller
 agriControllers.controller('IndexCtrl', ['$scope', 'leafletData', function ( $scope, leafletData ) {

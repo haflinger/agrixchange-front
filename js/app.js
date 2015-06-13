@@ -3,11 +3,23 @@ var agriApp = angular.module('agriApp', [
   'agriControllers',
   'ngRoute',
   'leaflet-directive',
+  'agriServices'
 ]);
+
+agriApp.run(['$rootScope', '$injector', 'sessionService', function($rootScope, $injector, sessionService) {
+    $injector.get("$http").defaults.transformRequest = function(data, headersGetter) {
+      if (sessionService.isLogged()) {
+        headersGetter()['Authorization'] = "Bearer " + sessionService.getAccessToken();
+      }
+      if (data) {
+        return angular.toJson(data);
+      }
+    };
+}]);
 
 agriApp.config(['$routeProvider',
   function($routeProvider) {
-    $routeProvider
+      $routeProvider
       .when('/index', {
         templateUrl: 'js/partials/index.html',
         controller: 'IndexCtrl'

@@ -1,6 +1,7 @@
 <!doctype html>
-<html lang="en" ng-app="agriApp">
+<html lang="en">
   <head>
+    <base href="/agrixchange-front/">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,9 +19,8 @@
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
 
   </head>
-  <body>
-
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+  <body ng-app="agriApp">
+    <nav class="navbar navbar-inverse navbar-fixed-top" ng-controller="NavBarCtrl">
     <div class="container-fluid">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -35,8 +35,8 @@
         <ul class="nav navbar-nav navbar-right">
           <li><a href="#">Parametres</a></li>
           <li><a href="#">Profil</a></li>
-          <li><a href="#/register">Inscription</a></li>
-          <li><a href="#/login">Connexion</a></li>
+          <li ng-if="logged == false"><a href="#/register">Inscription</a></li>
+          <li ng-if="logged == false"><a href="#/login">Connexion</a></li>
         </ul>
         <form class="navbar-form navbar-right">
           <input type="text" class="form-control" placeholder="Rechercher...">
@@ -74,6 +74,7 @@
     <script src="bower_components/angular-route/angular-route.min.js"></script>
     <script src="bower_components/angular-resource/angular-resource.min.js"></script>
     <script src="bower_components/angular-leaflet-directive/dist/angular-leaflet-directive.min.js"></script>
+    <script src="bower_components/ngstorage/ngStorage.min.js"></script>
 
     <!-- ANGULAR  -->
     <script src="js/config.js"></script>

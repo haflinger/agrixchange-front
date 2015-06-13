@@ -9,6 +9,9 @@ var agriApp = angular.module('agriApp', [
 agriApp.run(['$rootScope', '$injector', 'sessionService', function($rootScope, $injector, sessionService) {
     $injector.get("$http").defaults.transformRequest = function(data, headersGetter) {
       if (sessionService.isLogged()) {
+
+        console.log("Bearer " + sessionService.getAccessToken());
+
         headersGetter()['Authorization'] = "Bearer " + sessionService.getAccessToken();
       }
       if (data) {
@@ -27,6 +30,10 @@ agriApp.config(['$routeProvider',
       .when('/login', {
         templateUrl: 'js/partials/login.html',
         controller: 'LoginCtrl'
+      })
+      .when('/logout', {
+        templateUrl: 'js/partials/logout.html',
+        controller: 'LogoutCtrl'
       })
       .when('/register', {
         templateUrl: 'js/partials/register.html',

@@ -37,6 +37,7 @@
           <li><a href="#">Profil</a></li>
           <li ng-if="logged == false"><a href="#/register">Inscription</a></li>
           <li ng-if="logged == false"><a href="#/login">Connexion</a></li>
+          <li ng-if="logged == true"><a href="#/logout">Deconnexion</a></li>
         </ul>
         <form class="navbar-form navbar-right">
           <input type="text" class="form-control" placeholder="Rechercher...">

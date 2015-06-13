@@ -85,8 +85,8 @@ agriControllers.controller('LoginCtrl', ['$scope', '$http', '$location', 'sessio
       if(data.access_token) {
 
         sessionService.setAccessToken(data.access_token);
-
-        $http.get(API_BASE_URL + 'users/me?access_token=' + data.access_token).success(function(data){
+        console.log(data.access_token);
+        $http.get(API_BASE_URL + 'users/me').success(function(data){
           sessionService.setUser(data);
           $location.path('/index');
         })
@@ -99,17 +99,16 @@ agriControllers.controller('LoginCtrl', ['$scope', '$http', '$location', 'sessio
   }
 }]);
 
-agriControllers.controller('LogoutCtrl', ['$scope', '$location', function ( $scope, $location ) {
+agriControllers.controller('LogoutCtrl', ['sessionService', '$location', function ( sessionService , $location ) {
+
+  sessionService.destroy();
+
   $location.path('/login');
 }]);
 
 
-agriControllers.controller('NavBarCtrl', ['$scope', '$http', 'sessionService', 'API_AUTH_URL', function ( $scope, $http, sessionService, API_AUTH_URL ) {
+agriControllers.controller('NavBarCtrl', ['$scope', '$http', 'sessionService', 'API_AUTH_URL', function ($scope, $http, sessionService, API_AUTH_URL ) {
 
-  $scope.$watch(sessionService.isLogged, function(newValue, oldValue) {
-    $scope.logged = oldValue;
-  });
-
-  console.log(sessionService.isLogged());
+  $scope.logged = sessionService.isLogged();
 
 }]);

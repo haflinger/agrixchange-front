@@ -1,6 +1,6 @@
 
 
-var agriServices = angular.module('agriServices', ['ngResource', 'ngCookies']);
+var agriServices = angular.module('agriServices', ['ngResource', 'ngStorage']);
 
 agriServices.factory('User',
             ['$resource', 'API_BASE_URL',
@@ -12,12 +12,13 @@ agriServices.factory('User',
     });
 }]);
 
-agriServices.factory('sessionService', [ '$log',
-    function ($log) {
+agriServices.factory('sessionService', [ '$log', '$localStorage',
+    function ($log, $localStorage) {
+
     // Instantiate data when service
         // is loaded
-          //this._user        = $cookieStore.get('user');
-          //this._accessToken = $cookieStore.get('token');
+          this._user        = $localStorage.user;
+          this._accessToken = $localStorage.token;
 
         this.getUser = function(){
           return this._user;
@@ -25,7 +26,7 @@ agriServices.factory('sessionService', [ '$log',
 
         this.setUser = function(user){
           this._user = user;
-          //$cookieStore.put('user', user);
+          $localStorage.user = user;
           return this;
         };
 
@@ -36,7 +37,7 @@ agriServices.factory('sessionService', [ '$log',
         this.setAccessToken = function(token){
           console.log(token);
           this._accessToken = token;
-          //$cookieStore.put('token', token);
+          $localStorage.token = token;
           return this;
         };
 

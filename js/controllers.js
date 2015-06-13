@@ -105,7 +105,10 @@ agriControllers.controller('LogoutCtrl', ['$scope', '$location', function ( $sco
 
 
 agriControllers.controller('NavBarCtrl', ['$scope', '$http', 'sessionService', 'API_AUTH_URL', function ( $scope, $http, sessionService, API_AUTH_URL ) {
-  $scope.logged = sessionService.isLogged();
+
+  $scope.$watch(sessionService.isLogged, function(newValue, oldValue) {
+    $scope.logged = oldValue;
+  });
 
   console.log(sessionService.isLogged());
 

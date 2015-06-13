@@ -1,6 +1,6 @@
-'use strict';
 
-var agriServices = angular.module('agriServices', ['ngResource', 'ngStorage']);
+
+var agriServices = angular.module('agriServices', ['ngResource', 'ngCookies']);
 
 agriServices.factory('User',
             ['$resource', 'API_BASE_URL',
@@ -10,19 +10,14 @@ agriServices.factory('User',
       list: { method: 'GET', isArray: true },
       read: { method: 'GET' }
     });
-  }]);
+}]);
 
-  agriServices.factory('sessionService', [ '$log', '$localStorage',
-      function ($log, $localStorage) {
+agriServices.factory('sessionService', [ '$log',
+    function ($log) {
     // Instantiate data when service
         // is loaded
-        if ($localStorage.session ) {
-          this._user = $localStorage.session.user;
-        }
-
-        if ($localStorage.session) {
-          this._accessToken = $localStorage.session.accessToken;
-        }
+          //this._user        = $cookieStore.get('user');
+          //this._accessToken = $cookieStore.get('token');
 
         this.getUser = function(){
           return this._user;
@@ -30,9 +25,7 @@ agriServices.factory('User',
 
         this.setUser = function(user){
           this._user = user;
-          $localStorage.session = {
-            user : user
-          }
+          //$cookieStore.put('user', user);
           return this;
         };
 
@@ -43,9 +36,7 @@ agriServices.factory('User',
         this.setAccessToken = function(token){
           console.log(token);
           this._accessToken = token;
-          $localStorage.session = {
-            accessToken : token
-          }
+          //$cookieStore.put('token', token);
           return this;
         };
 
@@ -57,12 +48,10 @@ agriServices.factory('User',
             console.log('offline');
             return false;
           }
-        }
+        };
 
-        /**
-         * Destroy session
-         */
         this.destroy = function destroy(){
+          console.log('Destroy Session')
           this.setUser(null);
           this.setAccessToken(null);
         };

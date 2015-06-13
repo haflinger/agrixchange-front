@@ -15,30 +15,6 @@ agriControllers.controller('IndexCtrl', ['$scope', '$http', '$modal','leafletDat
       $scope.plots = plots;
     });
 
-
-    //
-    $scope.savePlot = function() {
-
-      var savePlotModalInstance = $modal.open({
-        animation: true,
-        templateUrl: 'js/partials/modals/savePlot.html',
-        controller: 'SavePlotModalCtrl',
-        size: 'lg',
-        resolve: {
-          plot: function () {
-            return $scope.plot;
-          }
-        }
-      });
-
-      savePlotModalInstance.result.then(function (plot) {
-        $scope.plot = plot;
-      }, function () {
-        console.log('Annulation');
-      });
-    }
-
-
     var drawnItems = new L.featureGroup().addTo(map);
 
     map.setView([48.470294, 1.015184], 13);
@@ -66,14 +42,36 @@ agriControllers.controller('IndexCtrl', ['$scope', '$http', '$modal','leafletDat
       edit: {featureGroup: drawnItems }
     }));
 
-    map.on('draw:created', function (event) {
+    map.on('draw:created', function (e) {
 
-      console.log(event);
-      $scope.plot = event;
-      $scope.savePlot();
+      var layer = e.layer;
 
-      var layer = event.layer;
-      drawnItems.addLayer(layer);
+      $scope.name = '';
+
+      var savePlotModalInstance = $modal.open({
+        animation: true,
+        templateUrl: 'js/partials/modals/savePlot.html',
+        controller: 'SavePlotModalCtrl',
+        size: 'sm',
+        resolve: {
+          name: function () {
+            return $scope.name;
+          }
+        }
+      });
+
+      savePlotModalInstance.result.then(function (name) {
+        $scope.name = name;
+        plots.post({ name : $scope.name, geoJson : layer.toGeoJSON().geometry.coordinates })
+
+        drawnItems.addLayer(layer);
+      }, function () {
+        console.log('Annulation');
+      });
+
+      //
+
+
 
 
         // console.log(JSON.stringify(layer.toGeoJSON()));
@@ -103,13 +101,13 @@ agriControllers.controller('PlotCtrl', ['$scope', function ( $scope ) {
 }]);
 
 // SAVE PLOT MODAL Controller
-agriControllers.controller('SavePlotModalCtrl', ['$scope', '$modalInstance', 'plot', function($scope, $modalInstance, plot){
+agriControllers.controller('SavePlotModalCtrl', ['$scope', '$modalInstance', 'name', function($scope, $modalInstance, name){
 
-  $scope.plot = plot;
+  $scope.name = name;
 
   $scope.submit = function () {
-    if($scope.plot.name.length >= 1) {
-      $modalInstance.close($scope.plot);
+    if($scope.name.length >= 1) {
+      $modalInstance.close($scope.name);
     }
   };
 

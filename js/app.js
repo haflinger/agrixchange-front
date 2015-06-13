@@ -2,6 +2,7 @@ var agriApp = angular.module('agriApp', [
   'agri.config',
   'agriControllers',
   'ngRoute',
+  'leaflet-directive',
 ]);
 
 agriApp.config(['$routeProvider',

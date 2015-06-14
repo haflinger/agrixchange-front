@@ -25,6 +25,7 @@
     "ngstorage": "~0.3.4",
     "angular-cookie": "~4.0.6",
     "angular-ui": "~0.4.0",
-    "restangular": "~1.5.1"
+    "restangular": "~1.5.1",
+    "metisMenu": "~1.1.3"
   }
 }

@@ -70,8 +70,8 @@ agriApp.config(['RestangularProvider', 'API_BASE_URL', function (RestangularProv
 agriApp.config(['$routeProvider',
   function($routeProvider) {
       $routeProvider
-      .when('/index', {
-        templateUrl: 'js/partials/index.html',
+      .when('/parcelle', {
+        templateUrl: 'js/partials/parcelle.html',
         controller: 'IndexCtrl'
       })
       .when('/login', {

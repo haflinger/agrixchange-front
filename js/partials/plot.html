@@ -1,5 +1,4 @@
-<h3 class="sub-header">{{ plot.name }}</h3>
-
+<h1 class="page-header">Parcelle : {{ plot.name }}</h1>
 <!-- sub nav -->
 <h4 class="sub-header">
   Campagne :
@@ -12,13 +11,16 @@
       <li><a href="#">2013 - 2014 : Mais</a></li>
     </ul>
   </div>
-  <div class="btn-group pull-right" role="group" aria-label="...">
+  <div class="btn-group" role="group" aria-label="...">
     <button type="button" class="btn btn-default">
       <i class="fa fa-history"></i>
     </button>
-    <button type="button" class="btn btn-default">
-      <i class="fa fa-plus"></i> Ajouter
+    <button type="button" class="btn btn-default" >
+      <i class="fa fa-plus"></i> Ajouter une campagne
     </button>
+      <button type="button" class="btn btn-default pull-right" ng-click="saveWork()">
+          <i class="fa fa-plus"></i> Ajouter un travail
+      </button>
   </div>
 </h4>
 
@@ -63,17 +65,13 @@
 
   <!-- RIGHT col -->
   <div class="col-sm-7">
-    <div class="panel panel-default">
-      <div class="panel-heading"><h5>Travaux</h5></div>
-      <div class="panel-body">
-
+      <div class="panel panel-default">
+          <div class="panel-heading">
+              <i class="fa fa-clock-o fa-fw"></i> Travaux
+          </div>
+          <!-- /.panel-heading -->
+          <div class="panel-body">
               <ul class="timeline">
-                  <li class="time-label">
-                                <span class="bg-orange">See Our Timeline
-                                </span>
-                      <br>
-                      <br>
-                  </li>
 
                   <li class="time-label">
                                 <span class="bg-light-blue"> Year 2014
@@ -163,8 +161,8 @@
                   </li>
               </ul>
           </div>
+          <!-- /.panel-body -->
       </div>
-    </div>
   </div>
 
 

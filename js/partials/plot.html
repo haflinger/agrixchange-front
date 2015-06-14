@@ -1,4 +1,4 @@
-<h3 class="sub-header">Parcelle 1</h3>
+<h3 class="sub-header">{{ plot.name }}</h3>
 
 <!-- sub nav -->
 <h4 class="sub-header">
@@ -33,6 +33,10 @@
       <dl class="dl-horizontal">
         <dt>Etat</dt>
         <dd>...</dd>
+      </dl>
+      <dl class="dl-horizontal">
+        <dt>Surface</dt>
+        <dd>{{ plot.area }}</dd>
       </dl>
       <dl class="dl-horizontal">
         <dt>Culture</dt>

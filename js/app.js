@@ -31,9 +31,6 @@ agriApp.config(['RestangularProvider', 'API_BASE_URL', function (RestangularProv
   RestangularProvider.setRestangularFields({
       id: '@id'
   });
-
-  RestangularProvider.setSelfLinkAbsoluteUrl(false);
-
   // Hydra collections support
   RestangularProvider.addResponseInterceptor(function (data, operation) {
       // Remove trailing slash to make Restangular working

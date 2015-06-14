@@ -1,23 +1,49 @@
 var agriControllers = angular.module('agriControllers', ['agriServices']);
 
 // Index Controller
-agriControllers.controller('IndexCtrl', ['$scope', '$http', '$modal','leafletData', 'Plot', 'Restangular', 'sessionService', 'API_BASE_URL', function ( $scope, $http, $modal, leafletData, Plot, Restangular, sessionService, API_BASE_URL ) {
+agriControllers.controller('IndexCtrl', ['$scope', '$location', '$http', '$modal','leafletData', 'Plot', 'Restangular', 'sessionService', 'API_BASE_URL', function ( $scope, $location, $http, $modal, leafletData, Plot, Restangular, sessionService, API_BASE_URL ) {
 
-  // LEAFLET MAP DRAW
+  // Redirect to plot
+  $scope.details = function (plot) {
+    console.log(plot['id']);
+    $location.path('/plot/' + plot['@id'].split("=").pop());
+  };
 
+  // Loading Plots
+  $scope.plots = Restangular.all('plots');
+
+  $scope.plots.getList().then(function(plots) {
+    $scope.plots = plots;
+  });
+
+  // Map drawing
   leafletData.getMap().then(function(map) {
-
-    // Loading Plots
-    var plots = Restangular.all('plots');
-
-    // TEST
-    plots.getList().then(function(plots) {
-      $scope.plots = plots;
-    });
 
     var drawnItems = new L.featureGroup().addTo(map);
 
-    map.setView([48.470294, 1.015184], 13);
+      $scope.$watch('plots', function(oldValue, newValue){
+        if(oldValue != newValue) {
+          var plotsToMap = [];
+          $scope.plots.forEach(function(plot){
+
+            drawnItems.addLayer(L.geoJson({
+              "type": "Feature",
+              "target" : {
+                "editing" : true
+              },
+              "properties": {"plot_name": plot.name},
+              "geometry": {
+                  "type": "Polygon",
+                  "coordinates" : [plot.geojson]
+                }
+            }));
+
+          })
+
+          map.fitBounds(drawnItems, { animated : true });
+          
+        }
+      });
 
     var osm = new L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 20,
@@ -37,14 +63,23 @@ agriControllers.controller('IndexCtrl', ['$scope', '$http', '$modal','leafletDat
       draw : {
         polyline : false,
         circle: false,
-        marker: false
+        marker: false,
+        polygon: {
+          showArea : true,
+          allowIntersection: true,
+        }
       },
       edit: {featureGroup: drawnItems }
     }));
 
     map.on('draw:created', function (e) {
 
+      var type = e.layerType
       var layer = e.layer;
+
+      if (type === 'polygon') {
+        $scope.area = L.GeometryUtil.geodesicArea(layer.getLatLngs());
+      }
 
       $scope.name = '';
 
@@ -62,41 +97,82 @@ agriControllers.controller('IndexCtrl', ['$scope', '$http', '$modal','leafletDat
 
       savePlotModalInstance.result.then(function (name) {
         $scope.name = name;
-        plots.post({ name : $scope.name, geoJson : layer.toGeoJSON().geometry.coordinates })
+        console.log(layer.toGeoJSON().geometry.coordinates[0]);
+        plots.post({ name : $scope.name, geojson : layer.toGeoJSON().geometry.coordinates[0], area : $scope.area }).then(function(response){
+          drawnItems.addLayer(layer);
+        }, function(e){
+          console.log(e);
+        });
 
-        drawnItems.addLayer(layer);
+
       }, function () {
         console.log('Annulation');
       });
 
-      //
-
-
-
-
-        // console.log(JSON.stringify(layer.toGeoJSON()));
     });
   });
-
-  // LEAFLET MAP LAYERS
-
-  $scope.mapLayers = {
-    osm : {
-      name  : 'OSM',
-      url   : 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      type  : 'xyz'
-    },
-    cadastre : {
-      name  : 'Cadastre',
-      url   : 'http://tms.cadastre.openstreetmap.fr/*/transp/{z}/{x}/{y}.png',
-      type  : 'xyz'
-    }
-  };
 
 }]);
 
 // PLOT Controller
-agriControllers.controller('PlotCtrl', ['$scope', function ( $scope ) {
+agriControllers.controller('PlotCtrl', ['$scope', '$routeParams', 'Restangular', 'leafletData', function ( $scope, $routeParams, Restangular, leafletData ) {
+
+  // Loading Plots
+  Restangular.one('plots', $routeParams.plot_id).get().then(function(plot){
+    $scope.plot = plot;
+  });
+
+  // Map drawing
+  leafletData.getMap().then(function(map) {
+
+  var getPolygonCenter = function (arr) {
+    return arr.reduce(function (x,y) {
+        return [x[0] + y[0]/arr.length, x[1] + y[1]/arr.length]
+    }, [0,0])
+  }
+
+
+  $scope.$watch('plot', function(oldValue, newValue){
+    if(oldValue != newValue) {
+
+      var layer = L.geoJson({
+        "type": "Feature",
+        "target" : {
+          "editing" : true
+        },
+        "properties": {"plot_name": $scope.plot.name},
+        "geometry": {
+            "type": "Polygon",
+            "coordinates" : [$scope.plot.geojson]
+          }
+      })
+
+      map.addLayer(layer);
+
+      map.setView(getPolygonCenter($scope.plot.geojson))
+      map.fitBounds(layer, { animated : true });
+
+    }
+  });
+
+
+
+  var osm = new L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 20,
+      minZoom: 8,
+      attribution: 'OpenStreetMap',
+  });
+
+  var cadastre = new L.tileLayer('http://tms.cadastre.openstreetmap.fr/*/transp/{z}/{x}/{y}.png', {
+      maxZoom: 20,
+      attribution: 'Cadastre',
+  });
+
+  map.addLayer(osm);
+  map.addLayer(cadastre);
+
+  });
+
 
 }]);
 

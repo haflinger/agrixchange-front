@@ -41,7 +41,7 @@ agriControllers.controller('IndexCtrl', ['$scope', '$location', '$http', '$modal
           })
 
           map.fitBounds(drawnItems, { animated : true });
-          
+
         }
       });
 
@@ -97,9 +97,11 @@ agriControllers.controller('IndexCtrl', ['$scope', '$location', '$http', '$modal
 
       savePlotModalInstance.result.then(function (name) {
         $scope.name = name;
-        console.log(layer.toGeoJSON().geometry.coordinates[0]);
-        plots.post({ name : $scope.name, geojson : layer.toGeoJSON().geometry.coordinates[0], area : $scope.area }).then(function(response){
+        $scope.plots.post({ name : $scope.name, geojson : layer.toGeoJSON().geometry.coordinates[0], area : $scope.area }).then(function(response){
           drawnItems.addLayer(layer);
+          $scope.plots.getList().then(function(plots) {
+            $scope.plots = plots;
+          });
         }, function(e){
           console.log(e);
         });
@@ -172,6 +174,8 @@ agriControllers.controller('PlotCtrl', ['$scope', '$routeParams', 'Restangular',
   map.addLayer(cadastre);
 
   });
+
+
 
 
 }]);
